@@ -1,6 +1,9 @@
+plugins {
+    id 'maven-publish'
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
 
 apply from: '../config/android-common.gradle'
 
@@ -60,35 +63,49 @@ bintray {
     configurations = ["archives"]
 }
 
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'AppAuth for Android'
-                description = 'OAuth2 / OpenID Connect client for Android apps'
-                url 'https://github.com/openid/AppAuth-Android'
-                licenses {
-                    license {
-                        name "The Apache Software License, Version 2.0"
-                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                        distribution "repo"
+afterEvaluate {
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/Retail-Success/AppAuth-Android")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                }
+            }
+        }
+        publications {
+            release(MavenPublication) {
+                from(components.release)
+
+                pom {
+                    name = 'AppAuth for Android'
+                    description = 'OAuth2 / OpenID Connect client for Android apps'
+                    url = 'https://github.com/openid/AppAuth-Android'
+                    licenses {
+                        license {
+                            name = "The Apache Software License, Version 2.0"
+                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                            distribution = "repo"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "iainmcgin"
+                            name = "Iain McGinniss"
+                            email = "iain.mcginniss@wework.com"
+                        }
+                    }
+                    scm {
+                        connection = "https://github.com/openid/AppAuth-Android.git"
+                        developerConnection = "https://github.com/openid/AppAuth-Android.git"
+                        url = 'https://github.com/openid/AppAuth-Android'
                     }
                 }
-
-                developers {
-                    developer {
-                        id "iainmcgin"
-                        name "Iain McGinniss"
-                        email "iain.mcginniss@wework.com"
-                    }
-                }
-
-                scm {
-                    connection "https://github.com/openid/AppAuth-Android.git"
-                    developerConnection "https://github.com/openid/AppAuth-Android.git"
-                    url 'https://github.com/openid/AppAuth-Android'
-                }
+                groupId = group
+                artifactId = 'net.openid.appauth'
+                version = version
             }
         }
     }

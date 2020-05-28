@@ -40,7 +40,7 @@ public class EndSessionRequest extends AuthorizationManagementRequest {
     static final String KEY_ID_TOKEN_HINT = "id_token_hint";
     @VisibleForTesting
     static final String KEY_REDIECT_URI = "post_logout_redirect_uri";
-    @VisibleForTesting
+
     static final String KEY_STATE = "state";
 
     /**
